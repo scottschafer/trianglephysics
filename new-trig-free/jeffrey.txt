@@ -1,0 +1,97 @@
+I suspect you have moved on, but I wanted to see if I could come up with a way to do this without an arctan or sqrt. Here's what I came up with:
+
+f = the force
+p = the perpendicular of the force
+c = the center of the triangle
+v = the vertex experiencing the force 
+a = c-v (must have length of 1)
+
+vdot = the dot product of a and f 
+pdot = the dot product of a and p
+
+velocity += vdot
+spin     += pdot
+
+position    += velocity
+orientation += spin
+
+recalculate triangle center and vertices 
+
+I believe you can avoid using any trig by storing the triangle vertices at initialization and recalculating them as offsets from axis 0 in the triangle. 
+
+
+Scott Schafer <scott.schafer@gmail.com>
+Jun 20 (5 days ago)
+to Jeffrey 
+I'll give that a shot - thank you!
+
+BTW, I converted to Javascript:
+http://www.scottschaferenterprises.com/triangles/ (click and drag)
+https://github.com/scottschafer/trianglephysics/archive/master.zip
+
+
+Scott Schafer <scott.schafer@gmail.com>
+Jun 21 (4 days ago)
+to Jeffrey 
+I'm a little lost here. Is velocity meant to be a scalar? Not sure how to code this then: position    += velocity
+
+Could you sketch out briefly the definition of your triangle? Thanks
+
+
+Jeffrey Ventrella
+Jun 21 (4 days ago)
+to me 
+Hey Scott, 
+
+On Thu, Jun 21, 2018 at 12:13 AM, Scott Schafer <scott.schafer@gmail.com> wrote:
+I'm a little lost here. Is velocity meant to be a scalar? Not sure how to code this then: position    += velocity
+
+Could you sketch out briefly the definition of your triangle? Thanks
+
+----
+
+​position and velocity are 2D vector​s. "position += velocity" is just an abbreviated way of saying that both the x and y components get added up.
+
+I'm not coding this so I can't guarantee it'll compile, but I think this would work.
+
+The triangle's dynamic attributes are position (c) and direction (v0-c)  (direction is analogous to 'orientation' or 'rotation' or 'angle', but is defined as a normalized 2D vector). 
+
+
+
+Cache the three directions at initialization. v0 is (0,1). The other two can be figured out using triangle math. 
+
+velocity constantly updates position (c)
+
+spin constantly updates direction. 
+
+Let's reconsider spin as a vector. I should have thought through this more before. Now that I think of it, spin (has) to be a vector.
+
+Does the first part of my (untested) algorithm make sense? I think it would work as long as we get a fresh vdot and pdot per each vertex experiencing a force at every step. 
+
+Assuming it does work, then I think it's then a matter of figuring out this spin thing. Think of spin as a non-normalized vector that is always perpendicular to direction.
+
+I think I should probably not try to continue unless I can actually code this up. If the concept makes sense to you, then you can probably take it from here. 
+
+On the other hand, you may be perfectly happy with the code as it is (and not worried about the use of trig) and move on :) 
+
+Hope that helps! 
+
+
+Scott Schafer <scott.schafer@gmail.com>
+Jun 21 (4 days ago)
+to Jeffrey 
+Sorry, I think I asked the wrong question.
+
+velocity += vdot
+
+If velocity is a vector, how do I add a scalar to it?
+
+
+Jeffrey Ventrella
+Jun 21 (4 days ago)
+to me 
+Oops - you're right. I forgot to include force. I think it would be: 
+
+velocity += vdot * force. 
+
+vdot has to be normalized now since force carries the magnitude. I guess the same goes with pdot. 
